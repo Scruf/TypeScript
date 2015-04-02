@@ -4552,10 +4552,27 @@ module ts {
                 // Only Emit __extends function when target ES5.
                 // For target ES6 and above, we can emit classDeclaration as if.
                 if ((languageVersion < ScriptTarget.ES6) && (!extendsEmitted && resolver.getNodeCheckFlags(node) & NodeCheckFlags.EmitExtends)) {
+                    // From ES6 14.5.14:
+                    // e.If superclass is null, then
+                    //      i.Let protoParent be null.
+                    //      ii.Let constructorParent be the intrinsic object % FunctionPrototype %.
+                    // f.Else if IsConstructor(superclass) is false, throw a TypeError exception.
+                    //
+                    // Because of this, we need to check explicitly for null and support that properly.
+                    // We don't need to do this for anything else (like 'extends undefined').  In that
+                    // case you'll crash with an error about being unable to access 'b.prototype'.  
+                    // However, the ES6 spec states that you'd get a TypeError anyways, so it's fine if
+                    // you get an exception from us anyways.
+
                     writeLine();
                     write("var __extends = this.__extends || function (d, b) {");
                     increaseIndent();
                     writeLine();
+                    if (languageVersion === ScriptTarget.ES5) {
+                        // Can only do this for ES5 as ES3 doesn't have Object.create.
+                        write("if (b === null) { d.prototype = Object.create(null); return; }");
+                        writeLine();
+                    }
                     write("for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];");
                     writeLine();
                     write("function __() { this.constructor = d; }");

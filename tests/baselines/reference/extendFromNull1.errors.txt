@@ -1,0 +1,8 @@
+tests/cases/compiler/extendFromNull1.ts(1,17): error TS9002: Only identifiers/qualified-names with optional type arguments are currently supported in a class 'extends' clauses.
+
+
+==== tests/cases/compiler/extendFromNull1.ts (1 errors) ====
+    class C extends null {
+                    ~~~~
+!!! error TS9002: Only identifiers/qualified-names with optional type arguments are currently supported in a class 'extends' clauses.
+    }

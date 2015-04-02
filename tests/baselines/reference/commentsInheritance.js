@@ -153,6 +153,7 @@ i2_i = i3_i;
 
 //// [commentsInheritance.js]
 var __extends = this.__extends || function (d, b) {
+    if (b === null) { d.prototype = Object.create(null); return; }
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
